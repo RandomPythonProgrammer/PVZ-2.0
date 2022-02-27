@@ -59,6 +59,7 @@ class Plant (ABC, Sprite):
             self.on_death()
 
     def collides(self, sprite: pygame.sprite.Sprite) -> bool:
+        """Returns whether the plant collides with a sprite"""
         return abs(self.rect.bottom - sprite.rect.bottom) < self.world.tile_size \
                and pygame.sprite.collide_mask(self, sprite)
 

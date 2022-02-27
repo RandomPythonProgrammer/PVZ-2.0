@@ -18,6 +18,8 @@ if __name__ == '__main__':
     current_plant = classes['plants']['peashooter']
     world.zombies.add(classes['zombies']['basic'](500, 0, world))
 
+    game_screen = pygame.Surface((720, 480))
+
     while not world.game_over:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -30,5 +32,6 @@ if __name__ == '__main__':
         world.update(time.time() - last_time)
         last_time = time.time()
         window.fill((0, 0, 0))
-        world.render(window)
+        world.render(game_screen)
+        window.blit(game_screen, (100, 100))
         pygame.display.update()
