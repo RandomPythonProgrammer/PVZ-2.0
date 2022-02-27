@@ -3,11 +3,15 @@ import os
 import logging
 
 
+class Game:
+    pass
+
+
 def load_classes():
     for folder in os.listdir(os.path.join(os.path.dirname(__file__), 'classes')):
         for file in os.listdir(os.path.join(os.path.dirname(__file__), 'classes', folder)):
             try:
-                if ('.py' in file or '.pyw' in file) and file[0] != '_':
+                if '.py' in file or '.pyw' in file:
                     name = '.'.join(
                         ('classes', folder, file)
                     ).replace('.py', '').replace('.pyw', '')
