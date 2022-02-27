@@ -3,10 +3,6 @@ import os
 import logging
 
 
-class Game:
-    pass
-
-
 def load_classes():
     for folder in os.listdir(os.path.join(os.path.dirname(__file__), 'classes')):
         for file in os.listdir(os.path.join(os.path.dirname(__file__), 'classes', folder)):
