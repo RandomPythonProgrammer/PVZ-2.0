@@ -35,5 +35,5 @@ if __name__ == '__main__':
         last_time = time.time()
         window.fill((0, 0, 0))
         world.render(game_screen)
-        window.blit(game_screen, (100, 100))
+        window.blit(game_screen, (game_screen.x, game_screen.y))
         pygame.display.update()
