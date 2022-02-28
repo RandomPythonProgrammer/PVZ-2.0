@@ -24,6 +24,9 @@ class Day(World):
     def on_lose(self):
         pass
 
+    def on_wave(self):
+        pass
+
     def update(self, dt: float):
         self.update_all(dt)
 

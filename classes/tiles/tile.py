@@ -23,12 +23,10 @@ class Tile(ABC, Sprite):
     @abstractmethod
     def on_create(self):
         """Called on tile creation"""
-        pass
 
     @abstractmethod
     def update(self, dt: float):
         """Called every frame, or whenever the world calls it, write the actions of the tile here"""
-        pass
 
     @property
     def image(self) -> pygame.Surface:

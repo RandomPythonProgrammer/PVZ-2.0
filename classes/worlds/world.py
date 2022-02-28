@@ -29,12 +29,10 @@ class World (ABC):
     @abstractmethod
     def on_create(self):
         """Called on creation"""
-        pass
 
     @abstractmethod
     def on_win(self):
         """Called when stage is won"""
-        pass
 
     @abstractmethod
     def on_lose(self):
@@ -49,11 +47,13 @@ class World (ABC):
         [zombie.update(dt) for zombie in self.zombies]
         [projectile.update(dt) for projectile in self.projectiles]
 
+    @abstractmethod
+    def on_wave(self):
+        """Called when a wave starts"""
 
     @abstractmethod
     def update(self, dt: float):
         """Called every loop, write the actions of the world here"""
-        pass
 
     def render_all(self, surface: pygame.Surface):
         """Method for rendering everything in the world"""
@@ -66,9 +66,7 @@ class World (ABC):
     @abstractmethod
     def spawn_zombie(self, zombie: Zombie, is_wave: bool):
         """Method called when the game spawns a zombie"""
-        pass
 
     @abstractmethod
     def render(self, surface: pygame.Surface):
         """Called every loop, write the rendering of the world here"""
-        pass

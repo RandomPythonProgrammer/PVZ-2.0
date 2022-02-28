@@ -6,6 +6,7 @@ classes: Dict[str, Dict[str, type]] = {}
 
 
 def load_class(class_type, game_id):
+    """A decorator that when added to a class, it will add it to the class list"""
     def load(cls):
         if class_type not in classes:
             classes[class_type] = {}
@@ -29,4 +30,4 @@ def load_classes():
 
 
 class ClassNameConflictError(Exception):
-    pass
+    """Class is already register"""

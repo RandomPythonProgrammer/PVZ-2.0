@@ -28,12 +28,10 @@ class Zombie (ABC, Sprite):
     @abstractmethod
     def on_create(self):
         """Called when the zombie is created"""
-        pass
 
     @abstractmethod
     def on_death(self):
         """Called when the zombie dies or is removed"""
-        pass
 
     def destroy(self):
         """Removes the zombie from the world"""
@@ -43,12 +41,10 @@ class Zombie (ABC, Sprite):
     @abstractmethod
     def update(self, dt: float):
         """Called every frame, or whenever the world calls it, write the actions of the zombie here"""
-        pass
 
     @abstractmethod
     def on_damage(self, damage: float) -> float:
         """Called when zombie is damaged, return the amount of damage the zombie takes"""
-        pass
 
     def damage(self, damage: float):
         """Does damage to the zombie and also calls on_death if it dies"""

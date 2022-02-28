@@ -29,12 +29,10 @@ class Plant (ABC, Sprite):
     @abstractmethod
     def on_create(self):
         """Called when the plant is created"""
-        pass
 
     @abstractmethod
     def on_death(self):
         """Called when the plant dies or is removed"""
-        pass
 
     def destroy(self):
         """Removes the plant from the world"""
@@ -45,12 +43,10 @@ class Plant (ABC, Sprite):
     @abstractmethod
     def can_plant(cls, tile: Tile, world: World) -> bool:
         """Returns weather the plant can be planted or not"""
-        pass
 
     @abstractmethod
     def update(self, dt: float):
         """Called every frame, or whenever the world calls it, write the actions of the plant here"""
-        pass
 
     def damage(self, damage: float):
         """Does damage to the plant and also calls on_death if it dies"""

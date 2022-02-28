@@ -7,6 +7,7 @@ sprites: Dict[str, pygame.Surface] = {}
 
 
 def load_sprites():
+    """Loads all of the assets into the game"""
     for folder in os.listdir(os.path.join(os.path.dirname(__file__), '..', 'assets')):
         for file in os.listdir(os.path.join(os.path.dirname(__file__), '..', 'assets', folder)):
             try:

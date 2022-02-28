@@ -26,12 +26,10 @@ class Object(ABC, Sprite):
     @abstractmethod
     def on_create(self):
         """Called when the projectile is created"""
-        pass
 
     @abstractmethod
     def on_death(self):
         """Called when the projectile dies or is removed"""
-        pass
 
     def destroy(self):
         """Removes the projectile from the world"""
@@ -41,7 +39,6 @@ class Object(ABC, Sprite):
     @abstractmethod
     def update(self, dt: float):
         """Called every frame, or whenever the world calls it, write the actions of the plant here"""
-        pass
 
     def collides(self, rect: pygame.Rect) -> bool:
         """Returns whether it collides with the rectangle"""
