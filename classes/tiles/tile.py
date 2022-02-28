@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from utils.asset_loader import sprites
-from utils.display_utils import update_queue
 from classes.worlds.world import World
 from pygame.sprite import Sprite
 import pygame
@@ -33,4 +32,4 @@ class Tile(ABC, Sprite):
         return sprites[self.game_id][self.frame]
 
     def render(self, surface: pygame.Surface):
-        update_queue.append(surface.blit(self.image, (self.x, self.y)))
+        surface.blit(self.image, (self.x, self.y))

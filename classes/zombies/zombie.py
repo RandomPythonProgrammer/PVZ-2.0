@@ -1,7 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from utils.asset_loader import sprites
-from utils.display_utils import update_queue
 import pygame
 from pygame.sprite import Sprite
 from typing import TYPE_CHECKING
@@ -43,12 +42,12 @@ class Zombie (ABC, Sprite):
         """Called every frame, or whenever the world calls it, write the actions of the zombie here"""
 
     @abstractmethod
-    def on_damage(self, damage: float) -> float:
+    def on_damage(self, damage: float, source: type) -> float:
         """Called when zombie is damaged, return the amount of damage the zombie takes"""
 
-    def damage(self, damage: float):
+    def damage(self, damage: float, source: type):
         """Does damage to the zombie and also calls on_death if it dies"""
-        damage = self.on_damage(damage)
+        damage = self.on_damage(damage, source)
         self.health -= damage
         if self.health <= 0:
             self.is_dead = True
@@ -65,4 +64,4 @@ class Zombie (ABC, Sprite):
         self.rect = pygame.Rect(self.x, self.y, self.rect.width, self.rect.height)
 
     def render(self, surface: pygame.Surface):
-        update_queue.append(surface.blit(self.image, (self.x, self.y)))
+        surface.blit(self.image, (self.x, self.y))

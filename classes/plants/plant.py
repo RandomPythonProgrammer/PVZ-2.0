@@ -2,12 +2,11 @@ from abc import ABC, abstractmethod
 from classes.tiles.tile import Tile
 from utils.asset_loader import sprites
 from classes.worlds.world import World
-from utils.display_utils import update_queue
 import pygame
 from pygame.sprite import Sprite
 
 
-class Plant (ABC, Sprite):
+class Plant(ABC, Sprite):
     """A plant"""
 
     game_id: str
@@ -48,9 +47,13 @@ class Plant (ABC, Sprite):
     def update(self, dt: float):
         """Called every frame, or whenever the world calls it, write the actions of the plant here"""
 
-    def damage(self, damage: float):
+    @abstractmethod
+    def on_damage(self, damage: float, source: type) -> float:
+        """Called when zombie is damaged, return the amount of damage the zombie takes"""
+
+    def damage(self, damage: float, source: type):
         """Does damage to the plant and also calls on_death if it dies"""
-        self.health -= damage
+        self.health -= self.on_damage(damage, source)
         if self.health <= 0:
             self.is_dead = True
             self.on_death()
@@ -65,4 +68,4 @@ class Plant (ABC, Sprite):
         return sprites[self.game_id][self.frame]
 
     def render(self, surface: pygame.Surface):
-        update_queue.append(surface.blit(self.image, (self.x, self.y)))
+        surface.blit(self.image, (self.x, self.y))

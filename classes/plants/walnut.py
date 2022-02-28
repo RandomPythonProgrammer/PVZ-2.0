@@ -17,5 +17,8 @@ class Walnut(Plant):
     def on_death(self):
         self.destroy()
 
+    def on_damage(self, damage: float, source: type) -> float:
+        return damage
+
     def update(self, dt: float):
         pass

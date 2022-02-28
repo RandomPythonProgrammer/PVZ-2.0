@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from utils.asset_loader import sprites
-from utils.display_utils import update_queue
 from classes.worlds.world import World
 import pygame
 from pygame.sprite import Sprite
@@ -49,12 +48,12 @@ class Object(ABC, Sprite):
         return sprites[self.game_id][self.frame]
 
     @abstractmethod
-    def on_damage(self, damage: float):
+    def on_damage(self, damage: float, source: type):
         """called when damaged, return amount of damage the object takes"""
 
-    def damage(self, damage: float):
+    def damage(self, damage: float, source: type):
         """Does damage to the object and also calls on_death if it dies"""
-        damage = self.on_damage(damage)
+        damage = self.on_damage(damage, source)
         self.health -= damage
         if self.health <= 0:
             self.is_dead = True
@@ -67,4 +66,4 @@ class Object(ABC, Sprite):
         self.rect = pygame.Rect(self.x, self.y, self.rect.width, self.rect.height)
 
     def render(self, surface: pygame.Surface):
-        update_queue.append(surface.blit(self.image, (self.x, self.y)))
+        surface.blit(self.image, (self.x, self.y))

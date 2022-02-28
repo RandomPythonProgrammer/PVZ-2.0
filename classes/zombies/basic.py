@@ -14,10 +14,10 @@ class Basic(Zombie):
         is_eating = False
         targets = [plant for plant in self.world.plants if plant.collides(self)]
         if len(targets) > 0:
-            targets[0].damage(45*dt)
+            targets[0].damage(45*dt, self)
             is_eating = True
         if not is_eating:
             self.move(-25 * dt, 0)
 
-    def on_damage(self, damage: float) -> float:
+    def on_damage(self, damage: float, source: type) -> float:
         return damage

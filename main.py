@@ -1,6 +1,5 @@
 from utils.class_loader import classes, load_classes
 from utils.asset_loader import load_sprites
-from utils.display_utils import update_display
 import pygame
 import sys
 import time
@@ -42,7 +41,7 @@ if __name__ == '__main__':
         last_time = time.time()
         window.fill((0, 0, 0))
         world.render(window)
-        update_display()
+        pygame.display.update()
         if world.paused:
             continue
         world.update(time.time() - last_time)

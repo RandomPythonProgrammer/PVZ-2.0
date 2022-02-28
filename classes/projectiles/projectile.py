@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from utils.asset_loader import sprites
-from utils.display_utils import update_queue
 from classes.worlds.world import World
 import pygame
 from pygame.sprite import Sprite
@@ -51,13 +50,22 @@ class Projectile (ABC, Sprite):
         """Returns a list of colliding objects based on rules"""
         objects = []
 
-        objects.extend([object for object in self.world.objects if (object.has_collision and (self.source_y is None or abs(self.source_y - object.rect.bottom) < self.world.tile_size)) and pygame.sprite.collide_mask(self, object)])
+        objects.extend([object for object in self.world.objects
+                        if (object.has_collision and (self.source_y is None or abs(self.source_y - object.rect.bottom) < self.world.tile_size))
+                        and object.rect.colliderect(self.rect)
+                        and pygame.sprite.collide_mask(self, object)])
 
         if self.source_type != Plant:
-           objects.extend([plant for plant in self.world.plants if (self.source_y is None or abs(self.source_y - plant.rect.bottom) < self.world.tile_size) and pygame.sprite.collide_mask(self, plant)])
+           objects.extend([plant for plant in self.world.plants
+                           if (self.source_y is None or abs(self.source_y - plant.rect.bottom) < self.world.tile_size)
+                           and plant.rect.colliderect(self.rect)
+                           and pygame.sprite.collide_mask(self, plant)])
 
         if self.source_type != Zombie:
-            objects.extend([zombie for zombie in self.world.zombies if (self.source_y is None or abs(self.source_y - zombie.rect.bottom) < self.world.tile_size) and pygame.sprite.collide_mask(self, zombie)])
+            objects.extend([zombie for zombie in self.world.zombies
+                            if (self.source_y is None or abs(self.source_y - zombie.rect.bottom) < self.world.tile_size)
+                            and zombie.rect.colliderect(self.rect)
+                            and pygame.sprite.collide_mask(self, zombie)])
 
         return objects
 
@@ -72,4 +80,4 @@ class Projectile (ABC, Sprite):
         self.rect = pygame.Rect(self.x, self.y, self.rect.width, self.rect.height)
 
     def render(self, surface: pygame.Surface):
-        update_queue.append(surface.blit(self.image, (self.x, self.y)))
+        surface.blit(self.image, (self.x, self.y))
