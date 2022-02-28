@@ -30,7 +30,7 @@ class Day(World):
     def spawn_sun(self):
         self.objects.append(classes['object']['sun'](
             random.random()*self.columns*self.tile_size,
-            random.random()*self.rows*self.tile_size,
+            random.random()*(self.rows+1)*self.tile_size,
             self,
         ))
 

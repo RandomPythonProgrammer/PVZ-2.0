@@ -1,6 +1,6 @@
 from utils.class_loader import classes, load_classes
 from utils.asset_loader import load_sprites
-from utils.input_utils import is_cancelled, set_cancelled, events, get_events
+from utils.input_utils import get_cancelled, set_cancelled, events, get_events
 import pygame
 import sys
 import time
@@ -22,15 +22,18 @@ if __name__ == '__main__':
     while not world.game_over:
         set_cancelled(False)
         get_events()
+        if not world.paused:
+            world.update(time.time() - last_time)
         for event in events:
             if event.type == pygame.QUIT:
                 sys.exit()
-            if event.type == pygame.MOUSEBUTTONUP and not is_cancelled:
+            if event.type == pygame.MOUSEBUTTONUP and not get_cancelled():
                 for tile in world.tiles:
                     x, y = pygame.mouse.get_pos()
                     if tile.rect.collidepoint(x, y):
                         if current_plant.can_plant(tile, world):
                             world.plants.append(current_plant(tile.rect.x, tile.rect.y, tile, world))
+                            set_cancelled(True)
                             break
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE:
@@ -48,6 +51,3 @@ if __name__ == '__main__':
         window.fill((0, 0, 0))
         world.render(window)
         pygame.display.update()
-        if world.paused:
-            continue
-        world.update(time.time() - last_time)

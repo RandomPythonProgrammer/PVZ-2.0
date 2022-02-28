@@ -17,6 +17,7 @@ class Object(ABC, Sprite):
         self.frame = 0
         self.world = world
         self.has_collision = False
+        self.background = True
         self.rect = self.image.get_rect()
         self.rect.update(x, y, self.rect.width, self.rect.height)
         self.x, self.y = x, y
