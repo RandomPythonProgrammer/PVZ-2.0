@@ -1,11 +1,14 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 import pygame
-from pygame.sprite import Group
 from operator import attrgetter
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from classes.zombies.zombie import Zombie
+    from classes.plants.plant import Plant
+    from classes.objects.object import Object
+    from classes.projectiles.projectile import Projectile
+    from classes.tiles.tile import Tile
 
 
 class World (ABC):
@@ -16,11 +19,11 @@ class World (ABC):
     def __init__(self):
         self.game_over = False
         self.paused = False
-        self.tiles = Group()
-        self.plants = Group()
-        self.zombies = Group()
-        self.objects = Group()
-        self.projectiles = Group()
+        self.tiles: List[Tile] = []
+        self.plants: List[Plant] = []
+        self.zombies: List[Zombie] = []
+        self.objects: List[Object] = []
+        self.projectiles: List[Projectile] = []
         self.tile_size = 64
         self.columns = 0
         self.rows = 0

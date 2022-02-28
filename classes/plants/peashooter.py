@@ -4,7 +4,7 @@ from utils.class_loader import load_class, classes
 from classes.plants.plant import Plant
 
 
-@load_class(class_type='plants', game_id='peashooter')
+@load_class
 class Peashooter(Plant):
 
     @classmethod
@@ -19,16 +19,17 @@ class Peashooter(Plant):
         self.destroy()
 
     def update(self, dt: float):
-        targets = [
-            zombie for zombie in self.world.zombies if abs(self.rect.bottom - zombie.rect.bottom) < self.world.tile_size
-        ]
-        if self.timer > 3 and len(targets) > 0:
-            self.world.projectiles.add(classes['projectiles']['pea'](
-                self.x,
-                self.y,
-                self.world,
-                (175, 0),
-                source_y=self.rect.bottom,
-            ))
-            self.timer = 0
+        if self.timer > 3:
+            targets = [
+                zombie for zombie in self.world.zombies if zombie.is_dead and abs(self.rect.bottom - zombie.rect.bottom) < self.world.tile_size
+            ]
+            if len(targets) > 0:
+                self.world.projectiles.add(classes['projectile']['pea'](
+                    self.x,
+                    self.y,
+                    self.world,
+                    (175, 0),
+                    source_y=self.rect.bottom,
+                ))
+                self.timer = 0
         self.timer += dt

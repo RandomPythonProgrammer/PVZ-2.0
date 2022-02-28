@@ -4,7 +4,7 @@ from utils.class_loader import load_class
 from classes.plants.plant import Plant
 
 
-@load_class(class_type='plants', game_id='walnut')
+@load_class
 class Walnut(Plant):
 
     @classmethod

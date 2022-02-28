@@ -13,11 +13,11 @@ if __name__ == '__main__':
     load_sprites()
     load_classes()
 
-    world = classes['worlds']['day']()
+    world = classes['world']['day']()
     last_time = time.time()
     start_time = time.time()
 
-    current_plant = classes['plants']['peashooter']
+    current_plant = classes['plant']['peashooter']
 
     while not world.game_over:
         for event in pygame.event.get():
@@ -28,14 +28,14 @@ if __name__ == '__main__':
                     x, y = pygame.mouse.get_pos()
                     if tile.rect.collidepoint(x, y):
                         if current_plant.can_plant(tile, world):
-                            world.plants.add(current_plant(tile.rect.x, tile.rect.y, tile, world))
+                            world.plants.append(current_plant(tile.rect.x, tile.rect.y, tile, world))
                             break
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE:
                     world.paused = not world.paused
                     break
                 if event.key == pygame.K_r:
-                    world.spawn_zombie(classes['zombies']['basic'], False)
+                    world.spawn_zombie(classes['zombie']['basic'], False)
                     break
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()

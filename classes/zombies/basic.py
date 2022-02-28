@@ -2,7 +2,7 @@ from utils.class_loader import load_class
 from classes.zombies.zombie import Zombie
 
 
-@load_class(class_type='zombies', game_id='basic')
+@load_class
 class Basic(Zombie):
     def on_create(self):
         self.health = 200

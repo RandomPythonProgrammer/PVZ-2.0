@@ -4,7 +4,7 @@ import pygame
 import random
 
 
-@load_class(class_type='worlds', game_id='day')
+@load_class
 class Day(World):
     def on_create(self):
         self.columns = 12
@@ -13,8 +13,8 @@ class Day(World):
         for i in range(self.rows):
             x = 0
             for j in range(self.columns):
-                tile = classes['tiles']['grass'](x, y, self)
-                self.tiles.add(tile)
+                tile = classes['tile']['grass'](x, y, self)
+                self.tiles.append(tile)
                 x += self.tile_size
             y += self.tile_size
 
@@ -31,7 +31,7 @@ class Day(World):
         self.update_all(dt)
 
     def spawn_zombie(self, zombie: type, is_wave: bool):
-        self.zombies.add(zombie((self.columns-1) * self.tile_size, random.randint(0, self.rows-1) * self.tile_size, self))
+        self.zombies.append(zombie((self.columns-1) * self.tile_size, random.randint(0, self.rows-1) * self.tile_size, self))
 
     def render(self, surface: pygame.Surface):
         self.render_all(surface)
