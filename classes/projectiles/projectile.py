@@ -17,6 +17,7 @@ class Projectile (ABC, Sprite):
         super().__init__()
         self.is_dead = False
         self.frame = 0
+        self.damage = 0
         self.velocity = velocity
         self.source_y = source_y
         self.world = world

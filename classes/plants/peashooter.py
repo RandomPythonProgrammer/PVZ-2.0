@@ -20,15 +20,16 @@ class Peashooter(Plant):
 
     def update(self, dt: float):
         if self.timer > 1.75:
-            targets = [
-                zombie for zombie in self.world.zombies if not zombie.is_dead and abs(self.rect.bottom - zombie.rect.bottom) < self.world.tile_size
-            ]
+            targets = [zombie for zombie in self.world.zombies
+                       if not zombie.is_dead
+                       and zombie.x > self.x
+                       and abs(self.rect.bottom - zombie.rect.bottom) < self.world.tile_size]
             if len(targets) > 0:
                 self.world.projectiles.append(classes['projectile']['pea'](
                     self.x,
                     self.y,
                     self.world,
-                    (175, 0),
+                    (200, 0),
                     source_y=self.rect.bottom,
                 ))
                 self.timer = 0
