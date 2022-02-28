@@ -1,5 +1,4 @@
 import pygame
-from typing import Union, Optional
 
 update_queue: pygame.rect = []
 

@@ -17,4 +17,3 @@ def load_sprites():
                 sprites[folder].append(img)
             except Exception as e:
                 logging.warning(e)
-
