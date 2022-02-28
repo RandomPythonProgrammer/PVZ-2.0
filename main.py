@@ -8,7 +8,7 @@ import time
 
 if __name__ == '__main__':
 
-    window = pygame.display.set_mode((1280, 720), pygame.FULLSCREEN | pygame.DOUBLEBUF)
+    window = pygame.display.set_mode((1280, 720), pygame.SCALED)
     pygame.event.set_allowed([pygame.QUIT, pygame.KEYUP, pygame.MOUSEBUTTONUP])
     load_sprites()
     load_classes()
