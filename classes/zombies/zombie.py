@@ -1,6 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from utils.asset_loader import sprites
+from utils.display_utils import update_queue
 import pygame
 from pygame.sprite import Sprite
 from typing import TYPE_CHECKING
@@ -68,4 +69,4 @@ class Zombie (ABC, Sprite):
         self.rect = pygame.Rect(self.x, self.y, self.rect.width, self.rect.height)
 
     def render(self, surface: pygame.Surface):
-        surface.blit(self.image, (self.x, self.y))
+        update_queue.append(surface.blit(self.image, (self.x, self.y)))

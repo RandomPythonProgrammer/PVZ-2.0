@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from classes.tiles.tile import Tile
 from utils.asset_loader import sprites
 from classes.worlds.world import World
+from utils.display_utils import update_queue
 import pygame
 from pygame.sprite import Sprite
 
@@ -69,4 +70,4 @@ class Plant (ABC, Sprite):
         return sprites[self.game_id][self.frame]
 
     def render(self, surface: pygame.Surface):
-        surface.blit(self.image, (self.x, self.y))
+        update_queue.append(surface.blit(self.image, (self.x, self.y)))

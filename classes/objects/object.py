@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from utils.asset_loader import sprites
+from utils.display_utils import update_queue
 from classes.worlds.world import World
 import pygame
 from pygame.sprite import Sprite
@@ -69,4 +70,4 @@ class Object(ABC, Sprite):
         self.rect = pygame.Rect(self.x, self.y, self.rect.width, self.rect.height)
 
     def render(self, surface: pygame.Surface):
-        surface.blit(self.image, (self.x, self.y))
+        update_queue.append(surface.blit(self.image, (self.x, self.y)))

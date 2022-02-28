@@ -1,5 +1,12 @@
 import pygame
 
+update_queue = []
+
+
+def update_display():
+    pygame.display.update(update_queue)
+    update_queue.clear()
+
 
 class ViewPort(pygame.Surface):
     def __init__(self, x: float, y: float, width: float, height: float, x_offset: float, y_offset: float):

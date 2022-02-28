@@ -1,6 +1,6 @@
 from utils.class_loader import classes, load_classes
 from utils.asset_loader import sprites, load_sprites
-from utils.view_port import ViewPort
+from utils.display_utils import ViewPort, update_display
 import pygame
 import sys
 import time
@@ -8,7 +8,7 @@ import time
 
 if __name__ == '__main__':
 
-    window = pygame.display.set_mode((1280, 720), pygame.FULLSCREEN|pygame.DOUBLEBUF)
+    window = pygame.display.set_mode((1280, 720), pygame.FULLSCREEN | pygame.DOUBLEBUF)
     pygame.event.set_allowed([pygame.QUIT, pygame.KEYUP, pygame.MOUSEBUTTONUP])
     load_sprites()
     load_classes()
@@ -42,7 +42,7 @@ if __name__ == '__main__':
         last_time = time.time()
         window.fill((0, 0, 0))
         world.render(window)
-        pygame.display.update()
+        update_display()
         if world.paused:
             continue
         world.update(time.time() - last_time)
