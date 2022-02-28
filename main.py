@@ -1,5 +1,6 @@
 from utils.class_loader import classes, load_classes
 from utils.asset_loader import load_sprites
+from utils.input_utils import is_cancelled, set_cancelled, events, get_events
 import pygame
 import sys
 import time
@@ -19,10 +20,12 @@ if __name__ == '__main__':
     current_plant = classes['plant']['peashooter']
 
     while not world.game_over:
-        for event in pygame.event.get():
+        set_cancelled(False)
+        get_events()
+        for event in events:
             if event.type == pygame.QUIT:
                 sys.exit()
-            if event.type == pygame.MOUSEBUTTONUP:
+            if event.type == pygame.MOUSEBUTTONUP and not is_cancelled:
                 for tile in world.tiles:
                     x, y = pygame.mouse.get_pos()
                     if tile.rect.collidepoint(x, y):
@@ -35,6 +38,9 @@ if __name__ == '__main__':
                     break
                 if event.key == pygame.K_r:
                     world.spawn_zombie(classes['zombie']['basic'], False)
+                    break
+                if event.key == pygame.K_e:
+                    world.spawn_sun()
                     break
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()

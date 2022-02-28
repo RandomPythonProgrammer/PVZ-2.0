@@ -27,6 +27,13 @@ class Day(World):
     def on_wave(self):
         pass
 
+    def spawn_sun(self):
+        self.objects.append(classes['object']['sun'](
+            random.random()*self.columns*self.tile_size,
+            random.random()*self.rows*self.tile_size,
+            self,
+        ))
+
     def update(self, dt: float):
         self.update_all(dt)
 

@@ -55,6 +55,10 @@ class World (ABC):
         """Called when a wave starts"""
 
     @abstractmethod
+    def spawn_sun(self):
+        """Called when the world wants to spawn a sun, note you actually have to spawn the sun"""
+
+    @abstractmethod
     def update(self, dt: float):
         """Called every loop, write the actions of the world here"""
 
