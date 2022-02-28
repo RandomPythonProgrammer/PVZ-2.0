@@ -1,6 +1,6 @@
 from utils.class_loader import classes, load_classes
-from utils.asset_loader import sprites, load_sprites
-from utils.display_utils import ViewPort, update_display
+from utils.asset_loader import load_sprites
+from utils.display_utils import update_display
 import pygame
 import sys
 import time

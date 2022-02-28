@@ -1,7 +1,8 @@
 import os
 import logging
+from typing import Dict
 
-classes = {}
+classes: Dict[str, Dict[str, type]] = {}
 
 
 def load_class(class_type, game_id):

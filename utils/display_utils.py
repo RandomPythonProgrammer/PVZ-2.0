@@ -1,6 +1,6 @@
 import pygame
 
-update_queue = []
+update_queue: pygame.rect = []
 
 
 def update_display():

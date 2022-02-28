@@ -1,4 +1,3 @@
-from __future__ import annotations
 from abc import ABC, abstractmethod
 from classes.tiles.tile import Tile
 from utils.asset_loader import sprites

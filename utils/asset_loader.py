@@ -1,8 +1,9 @@
 import os
 import logging
 import pygame
+from typing import Dict
 
-sprites = {}
+sprites: Dict[str, pygame.Surface] = {}
 
 
 def load_sprites():

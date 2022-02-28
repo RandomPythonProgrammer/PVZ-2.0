@@ -1,6 +1,5 @@
 from utils.class_loader import load_class
 from classes.zombies.zombie import Zombie
-import pygame
 
 
 @load_class(class_type='zombies', game_id='basic')

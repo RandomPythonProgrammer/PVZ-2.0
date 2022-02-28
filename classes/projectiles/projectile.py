@@ -1,4 +1,3 @@
-from __future__ import annotations
 from abc import ABC, abstractmethod
 from utils.asset_loader import sprites
 from utils.display_utils import update_queue
