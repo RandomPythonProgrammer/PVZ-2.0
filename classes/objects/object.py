@@ -35,6 +35,7 @@ class Object(ABC, Sprite):
     def destroy(self):
         """Removes the projectile from the world"""
         self.world.objects.remove(self)
+        self.kill()
 
     @abstractmethod
     def update(self, dt: float):
@@ -66,3 +67,6 @@ class Object(ABC, Sprite):
         self.x += x
         self.y += y
         self.rect = pygame.Rect(self.x, self.y, self.rect.width, self.rect.height)
+
+    def render(self, surface: pygame.Surface):
+        surface.blit(self.image, (self.x, self.y))

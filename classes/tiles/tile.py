@@ -32,3 +32,6 @@ class Tile(ABC, Sprite):
     @property
     def image(self) -> pygame.Surface:
         return sprites[self.game_id][self.frame]
+
+    def render(self, surface: pygame.Surface):
+        surface.blit(self.image, (self.x, self.y))

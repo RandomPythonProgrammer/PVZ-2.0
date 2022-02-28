@@ -40,6 +40,7 @@ class Projectile (ABC, Sprite):
     def destroy(self):
         """Removes the projectile from the world"""
         self.world.projectiles.remove(self)
+        self.kill()
 
     @abstractmethod
     def update(self, dt: float):
@@ -49,22 +50,15 @@ class Projectile (ABC, Sprite):
     def get_collisions(self) -> list:
         """Returns a list of colliding objects based on rules"""
         objects = []
-        for object in self.world.objects:
-            if object.has_collision and pygame.sprite.collide_mask(self, object):
-                if self.source_y is None or abs(self.source_y - object.rect.bottom) < self.world.tile_size:
-                    objects.append(objects)
+
+        objects.extend([object for object in self.world.objects if (object.has_collision and (self.source_y is None or abs(self.source_y - object.rect.bottom) < self.world.tile_size)) and pygame.sprite.collide_mask(self, object)])
 
         if self.source_type != Plant:
-            for plant in self.world.plants:
-                if pygame.sprite.collide_mask(self, plant):
-                    if self.source_y is None or abs(self.source_y - plant.rect.bottom) < self.world.tile_size:
-                        objects.append(plant)
+           objects.extend([plant for plant in self.world.plants if (self.source_y is None or abs(self.source_y - plant.rect.bottom) < self.world.tile_size) and pygame.sprite.collide_mask(self, plant)])
 
         if self.source_type != Zombie:
-            for zombie in self.world.zombies:
-                if pygame.sprite.collide_mask(self, zombie):
-                    if self.source_y is None or abs(self.source_y - zombie.rect.bottom) < self.world.tile_size:
-                        objects.append(zombie)
+            objects.extend([zombie for zombie in self.world.zombies if (self.source_y is None or abs(self.source_y - zombie.rect.bottom) < self.world.tile_size) and pygame.sprite.collide_mask(self, zombie)])
+
         return objects
 
     @property
@@ -76,3 +70,6 @@ class Projectile (ABC, Sprite):
         self.x += x
         self.y += y
         self.rect = pygame.Rect(self.x, self.y, self.rect.width, self.rect.height)
+
+    def render(self, surface: pygame.Surface):
+        surface.blit(self.image, (self.x, self.y))

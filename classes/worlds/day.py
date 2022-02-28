@@ -1,21 +1,22 @@
-import pygame
-
 from classes.worlds.world import World
-from classes.zombies.zombie import Zombie
 from utils.class_loader import load_class, classes
+import pygame
+import random
 
 
 @load_class(class_type='worlds', game_id='day')
 class Day(World):
     def on_create(self):
-        x, y = 0, 0
-        for i in range(9):
+        self.columns = 12
+        self.rows = 9
+        x, y = 0, self.tile_size
+        for i in range(self.rows):
             x = 0
-            for j in range(12):
+            for j in range(self.columns):
                 tile = classes['tiles']['grass'](x, y, self)
                 self.tiles.add(tile)
-                x += tile.rect.width
-            y += tile.rect.height
+                x += self.tile_size
+            y += self.tile_size
 
     def on_win(self):
         pass
@@ -26,8 +27,8 @@ class Day(World):
     def update(self, dt: float):
         self.update_all(dt)
 
-    def on_zombie_spawn(self, zombie: Zombie, is_wave: bool):
-        pass
+    def spawn_zombie(self, zombie: type, is_wave: bool):
+        self.zombies.add(zombie((self.columns-1) * self.tile_size, random.randint(0, self.rows-1) * self.tile_size, self))
 
     def render(self, surface: pygame.Surface):
         self.render_all(surface)

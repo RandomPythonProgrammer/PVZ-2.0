@@ -39,6 +39,7 @@ class Plant (ABC, Sprite):
     def destroy(self):
         """Removes the plant from the world"""
         self.world.plants.remove(self)
+        self.kill()
 
     @classmethod
     @abstractmethod
@@ -66,3 +67,6 @@ class Plant (ABC, Sprite):
     @property
     def image(self) -> pygame.Surface:
         return sprites[self.game_id][self.frame]
+
+    def render(self, surface: pygame.Surface):
+        surface.blit(self.image, (self.x, self.y))
