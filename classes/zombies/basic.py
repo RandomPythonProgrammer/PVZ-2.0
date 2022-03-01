@@ -12,7 +12,9 @@ class Basic(Zombie):
 
     def update(self, dt: float):
         is_eating = False
-        targets = [plant for plant in self.world.plants if plant.collides(self)]
+        targets = [plant for plant in self.world.plants
+                   if plant.collides(self)
+                   and self.rect.centerx > plant.rect.centerx]
         if len(targets) > 0:
             targets[0].damage(45*dt, self)
             is_eating = True
