@@ -67,9 +67,9 @@ class World (ABC):
         [tile.render(surface) for tile in sorted(self.tiles, key=attrgetter('y'))]
         [object.render(surface) for object in sorted(self.objects, key=attrgetter('y')) if object.background]
         [plant.render(surface) for plant in sorted(self.plants, key=attrgetter('y'))]
+        [projectile.render(surface) for projectile in sorted(self.projectiles, key=attrgetter('y'))]
         [zombie.render(surface) for zombie in sorted(self.zombies, key=attrgetter('y'))]
         [object.render(surface) for object in sorted(self.objects, key=attrgetter('y')) if not object.background]
-        [projectile.render(surface) for projectile in sorted(self.projectiles, key=attrgetter('y'))]
 
     @abstractmethod
     def spawn_zombie(self, zombie: Zombie, is_wave: bool):

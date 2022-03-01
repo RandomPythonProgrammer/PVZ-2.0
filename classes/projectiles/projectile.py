@@ -53,19 +53,22 @@ class Projectile (ABC, Sprite):
         objects = []
 
         objects.extend([object for object in self.world.objects
-                        if (object.has_collision and (self.source_y is None or abs(self.source_y - object.rect.bottom) < self.world.tile_size))
+                        if not object.is_dead
+                        and (object.has_collision and (self.source_y is None or abs(self.source_y - object.rect.bottom) < self.world.tile_size))
                         and object.rect.colliderect(self.rect)
                         and pygame.sprite.collide_mask(self, object)])
 
         if self.source_type != Plant:
            objects.extend([plant for plant in self.world.plants
-                           if (self.source_y is None or abs(self.source_y - plant.rect.bottom) < self.world.tile_size)
+                           if not plant.is_dead
+                           and (self.source_y is None or abs(self.source_y - plant.rect.bottom) < self.world.tile_size)
                            and plant.rect.colliderect(self.rect)
                            and pygame.sprite.collide_mask(self, plant)])
 
         if self.source_type != Zombie:
             objects.extend([zombie for zombie in self.world.zombies
-                            if (self.source_y is None or abs(self.source_y - zombie.rect.bottom) < self.world.tile_size)
+                            if not zombie.is_dead
+                            and (self.source_y is None or abs(self.source_y - zombie.rect.bottom) < self.world.tile_size)
                             and zombie.rect.colliderect(self.rect)
                             and pygame.sprite.collide_mask(self, zombie)])
 

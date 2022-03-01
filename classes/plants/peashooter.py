@@ -1,3 +1,5 @@
+import pygame
+
 from classes.tiles.tile import Tile
 from classes.worlds.world import World
 from utils.class_loader import load_class, classes
@@ -25,13 +27,15 @@ class Peashooter(Plant):
                        and zombie.x > self.x
                        and abs(self.rect.bottom - zombie.rect.bottom) < self.world.tile_size]
             if len(targets) > 0:
-                self.world.projectiles.append(classes['projectile']['pea'](
+                projectile = classes['projectile']['pea'](
                     self.x,
                     self.y,
                     self.world,
                     (200, 0),
                     source_y=self.rect.bottom,
-                ))
+                )
+                projectile.x, projectile.y = self.x + self.rect.width/2, self.y + self.rect.height/4
+                self.world.projectiles.append(projectile)
                 self.timer = 0
         self.timer += dt
 
