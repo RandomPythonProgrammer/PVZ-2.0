@@ -5,7 +5,7 @@ from classes.zombies.zombie import Zombie
 @load_class
 class Basic(Zombie):
     def on_create(self):
-        self.health = 200
+        self.health = 175
 
     def on_death(self):
         self.destroy()

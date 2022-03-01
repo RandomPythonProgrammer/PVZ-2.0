@@ -21,7 +21,7 @@ class Peashooter(Plant):
         self.destroy()
 
     def update(self, dt: float):
-        if self.timer > 1.75:
+        if self.timer > 1.5:
             targets = [zombie for zombie in self.world.zombies
                        if not zombie.is_dead
                        and zombie.x > self.x
