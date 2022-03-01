@@ -17,6 +17,7 @@ class Plant(ABC, Sprite):
         self.frame = 0
         self.cost = 0
         self.cooldown = 0
+        self.visible = True
         self.health = -1
         self.tile = tile
         self.world = world
@@ -68,4 +69,6 @@ class Plant(ABC, Sprite):
         return sprites[self.game_id][self.frame]
 
     def render(self, surface: pygame.Surface):
+        if not self.visible:
+            return
         surface.blit(self.image, (self.x, self.y))

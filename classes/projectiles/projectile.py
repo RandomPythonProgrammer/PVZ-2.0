@@ -20,6 +20,7 @@ class Projectile (ABC, Sprite):
         self.damage = 0
         self.velocity = velocity
         self.source_y = source_y
+        self.visible = True
         self.world = world
         self.source_type = source_type
         self.rect = self.image.get_rect()
@@ -81,4 +82,6 @@ class Projectile (ABC, Sprite):
         self.rect = pygame.Rect(self.x, self.y, self.rect.width, self.rect.height)
 
     def render(self, surface: pygame.Surface):
+        if not self.visible:
+            return
         surface.blit(self.image, (self.x, self.y))

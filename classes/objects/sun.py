@@ -13,6 +13,7 @@ class Sun(Object):
         self.speed = 40
         self.target_x = self.x
         self.target_y = self.y
+        self.visible = False
 
     def on_death(self):
         self.destroy()
@@ -24,6 +25,9 @@ class Sun(Object):
                 if pygame.mask.from_surface(self.image).get_at((x - self.x, y - self.y)) != 0:
                     set_cancelled(True)
                     self.on_death()
+
+        if not self.visible:
+            self.visible = True
 
         if self.speed == 0:
             return
@@ -40,11 +44,11 @@ class Sun(Object):
             self.speed = 0
         if self.x > self.target_x:
             self.move(-self.speed*dt, 0)
-        else:
+        elif self.x < self.target_x:
             self.move(self.speed*dt, 0)
         if self.y > self.target_y:
             self.move(0, -self.speed*dt)
-        else:
+        elif self.y < self.target_y:
             self.move(0, self.speed*dt)
 
     def on_damage(self, damage: float, source: type):

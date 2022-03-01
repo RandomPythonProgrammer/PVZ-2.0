@@ -14,6 +14,7 @@ class Tile(ABC, Sprite):
         self.type = 'null'
         self.frame = 0
         self.world = world
+        self.visible = True
         self.rect = self.image.get_rect()
         self.rect.update(x, y, self.rect.width, self.rect.height)
         self.x, self.y = x, y
@@ -32,4 +33,6 @@ class Tile(ABC, Sprite):
         return sprites[self.game_id][self.frame]
 
     def render(self, surface: pygame.Surface):
+        if not self.visible:
+            return
         surface.blit(self.image, (self.x, self.y))

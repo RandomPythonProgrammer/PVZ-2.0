@@ -16,6 +16,7 @@ class Zombie (ABC, Sprite):
     def __init__(self, x: int, y: int, world: World):
         super().__init__()
         self.is_dead = False
+        self.visible = True
         self.frame = 0
         self.health = -1
         self.world = world
@@ -64,4 +65,6 @@ class Zombie (ABC, Sprite):
         self.rect = pygame.Rect(self.x, self.y, self.rect.width, self.rect.height)
 
     def render(self, surface: pygame.Surface):
+        if not self.visible:
+            return
         surface.blit(self.image, (self.x, self.y))

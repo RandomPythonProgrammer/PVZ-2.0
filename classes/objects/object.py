@@ -18,6 +18,7 @@ class Object(ABC, Sprite):
         self.world = world
         self.has_collision = False
         self.background = True
+        self.visible = True
         self.rect = self.image.get_rect()
         self.rect.update(x, y, self.rect.width, self.rect.height)
         self.x, self.y = x, y
@@ -67,4 +68,6 @@ class Object(ABC, Sprite):
         self.rect = pygame.Rect(self.x, self.y, self.rect.width, self.rect.height)
 
     def render(self, surface: pygame.Surface):
+        if not self.visible:
+            return
         surface.blit(self.image, (self.x, self.y))
