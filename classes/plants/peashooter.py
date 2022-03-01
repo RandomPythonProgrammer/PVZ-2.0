@@ -1,5 +1,3 @@
-import pygame
-
 from classes.tiles.tile import Tile
 from classes.worlds.world import World
 from utils.class_loader import load_class, classes

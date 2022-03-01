@@ -19,6 +19,6 @@ class Pea(Projectile):
             self.on_death()
             return
         x, y = self.velocity
-        self.move(x*dt, y)
+        self.move(x*dt, y*dt)
         if time.time() - self.start_time > 10:
             self.on_death()
