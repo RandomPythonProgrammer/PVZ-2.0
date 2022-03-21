@@ -3,8 +3,6 @@ from utils.asset_loader import sprites
 from classes.worlds.world import World
 import pygame
 from pygame.sprite import Sprite
-from classes.plants.plant import Plant
-from classes.zombies.zombie import Zombie
 
 
 class Projectile (ABC, Sprite):
@@ -13,7 +11,7 @@ class Projectile (ABC, Sprite):
 
     game_id: str
 
-    def __init__(self, x: int, y: int, world: World, velocity: tuple, source_y=None, source_type=Plant):
+    def __init__(self, x: int, y: int, world: World, velocity: tuple, team: int, source_y=None):
         super().__init__()
         self.is_dead = False
         self.frame = 0
@@ -22,7 +20,7 @@ class Projectile (ABC, Sprite):
         self.source_y = source_y
         self.visible = True
         self.world = world
-        self.source_type = source_type
+        self.team = team
         self.rect = self.image.get_rect()
         self.rect.update(x, y, self.rect.width, self.rect.height)
         self.x, self.y = x, y
@@ -50,28 +48,16 @@ class Projectile (ABC, Sprite):
 
     def get_collisions(self) -> list:
         """Returns a list of colliding objects based on rules"""
+        total = []
+        [total.extend(group) for group in (self.world.objects, self.world.belligerents, self.world.farm_items)]
         objects = []
 
-        objects.extend([object for object in self.world.objects
+        objects.extend([object for object in total
                         if not object.is_dead
                         and (object.has_collision and (self.source_y is None or abs(self.source_y - object.rect.bottom) < self.world.tile_size))
+                        and object.team != self.team
                         and object.rect.colliderect(self.rect)
                         and pygame.sprite.collide_mask(self, object)])
-
-        if self.source_type != Plant:
-           objects.extend([plant for plant in self.world.plants
-                           if not plant.is_dead
-                           and (self.source_y is None or abs(self.source_y - plant.rect.bottom) < self.world.tile_size)
-                           and plant.rect.colliderect(self.rect)
-                           and pygame.sprite.collide_mask(self, plant)])
-
-        if self.source_type != Zombie:
-            objects.extend([zombie for zombie in self.world.zombies
-                            if not zombie.is_dead
-                            and (self.source_y is None or abs(self.source_y - zombie.rect.bottom) < self.world.tile_size)
-                            and zombie.rect.colliderect(self.rect)
-                            and pygame.sprite.collide_mask(self, zombie)])
-
         return objects
 
     @property
@@ -87,4 +73,7 @@ class Projectile (ABC, Sprite):
     def render(self, surface: pygame.Surface):
         if not self.visible:
             return
-        surface.blit(self.image, (self.x, self.y))
+        if self.team == 1:
+            surface.blit(self.image, (self.x, self.y))
+        elif self.team == 2:
+            surface.blit(pygame.transform.flip(self.image, True, False), (self.x, self.y))

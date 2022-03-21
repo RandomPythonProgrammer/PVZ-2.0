@@ -6,12 +6,12 @@ import pygame
 from pygame.sprite import Sprite
 
 
-class Plant(ABC, Sprite):
-    """A plant"""
+class FarmItem(ABC, Sprite):
+    """A farm item"""
 
     game_id: str
 
-    def __init__(self, x: int, y: int, tile: Tile, world: World):
+    def __init__(self, x: int, y: int, tile: Tile, team: int, world: World):
         super().__init__()
         self.is_dead = False
         self.frame = 0
@@ -24,43 +24,45 @@ class Plant(ABC, Sprite):
         self.rect = self.image.get_rect()
         self.rect.update(x, y, self.rect.width, self.rect.height)
         self.x, self.y = x, y
+        self.team = team
+        self.has_collision = True
         self.on_create()
 
     @abstractmethod
     def on_create(self):
-        """Called when the plant is created"""
+        """Called when the farm item is created"""
 
     @abstractmethod
     def on_death(self):
-        """Called when the plant dies or is removed"""
+        """Called when the farm item dies or is removed"""
 
     def destroy(self):
-        """Removes the plant from the world"""
-        self.world.plants.remove(self)
+        """Removes the farm item from the world"""
+        self.world.farm_items.remove(self)
         self.kill()
 
     @classmethod
     @abstractmethod
-    def can_plant(cls, tile: Tile, world: World) -> bool:
-        """Returns weather the plant can be planted or not"""
+    def can_place(cls, tile: Tile, world: World) -> bool:
+        """Returns weather the farm item can be farm item or not"""
 
     @abstractmethod
     def update(self, dt: float):
-        """Called every frame, or whenever the world calls it, write the actions of the plant here"""
+        """Called every frame, or whenever the world calls it, write the actions of the farm item here"""
 
     @abstractmethod
     def on_damage(self, damage: float, source: type) -> float:
         """Called when zombie is damaged, return the amount of damage the zombie takes"""
 
     def damage(self, damage: float, source: type):
-        """Does damage to the plant and also calls on_death if it dies"""
+        """Does damage to the farm item and also calls on_death if it dies"""
         self.health -= self.on_damage(damage, source)
         if self.health <= 0:
             self.is_dead = True
             self.on_death()
 
     def collides(self, sprite: pygame.sprite.Sprite) -> bool:
-        """Returns whether the plant collides with a sprite"""
+        """Returns whether the farm item collides with a sprite"""
         return abs(self.rect.bottom - sprite.rect.bottom) < self.world.tile_size \
                and pygame.sprite.collide_mask(self, sprite)
 
@@ -71,4 +73,7 @@ class Plant(ABC, Sprite):
     def render(self, surface: pygame.Surface):
         if not self.visible:
             return
-        surface.blit(self.image, (self.x, self.y))
+        if self.team == 1:
+            surface.blit(self.image, (self.x, self.y))
+        elif self.team == 2:
+            surface.blit(pygame.transform.flip(self.image, True, False), (self.x, self.y))

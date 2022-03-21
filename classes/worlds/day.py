@@ -31,14 +31,15 @@ class Day(World):
         self.objects.append(classes['object']['sun'](
             random.random()*self.columns*self.tile_size,
             random.random()*(self.rows+1)*self.tile_size,
+            3,
             self,
         ))
 
     def update(self, dt: float):
         self.update_all(dt)
 
-    def spawn_zombie(self, zombie: type, is_wave: bool):
-        self.zombies.append(zombie((self.columns-1) * self.tile_size, random.randint(0, self.rows-1) * self.tile_size, self))
+    def spawn_belligerent(self, belligerent: type, is_wave: bool):
+        self.belligerents.append(belligerent((self.columns - 1) * self.tile_size, random.randint(0, self.rows - 1) * self.tile_size, 2, self))
 
-    def render(self, surface: pygame.Surface):
-        self.render_all(surface)
+    def on_render(self, surface: pygame.Surface):
+        pass

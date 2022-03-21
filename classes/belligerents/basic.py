@@ -1,9 +1,9 @@
 from utils.class_loader import load_class
-from classes.zombies.zombie import Zombie
+from classes.belligerents.belligerent import Belligerent
 
 
 @load_class
-class Basic(Zombie):
+class Basic(Belligerent):
     def on_create(self):
         self.health = 175
 
@@ -12,9 +12,10 @@ class Basic(Zombie):
 
     def update(self, dt: float):
         is_eating = False
-        targets = [plant for plant in self.world.plants
-                   if plant.collides(self)
-                   and self.rect.centerx > plant.rect.centerx]
+        targets = [target for target in self.world.farm_items
+                   if target.collides(self)
+                   and self.rect.centerx > target.rect.centerx
+                   and target.team != self.team]
         if len(targets) > 0:
             targets[0].damage(45*dt, self)
             is_eating = True

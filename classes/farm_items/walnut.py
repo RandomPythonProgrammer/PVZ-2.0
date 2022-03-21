@@ -1,14 +1,14 @@
 from classes.tiles.tile import Tile
 from classes.worlds.world import World
 from utils.class_loader import load_class
-from classes.plants.plant import Plant
+from classes.farm_items.farm_item import FarmItem
 
 
 @load_class
-class Walnut(Plant):
+class Walnut(FarmItem):
 
     @classmethod
-    def can_plant(cls, tile: Tile, world: World) -> bool:
+    def can_place(cls, tile: Tile, world: World) -> bool:
         return tile.type == 'normal'
 
     def on_create(self):

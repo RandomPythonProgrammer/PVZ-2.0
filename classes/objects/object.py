@@ -11,9 +11,10 @@ class Object(ABC, Sprite):
 
     game_id: str
 
-    def __init__(self, x: int, y: int, world: World):
+    def __init__(self, x: int, y: int, team: int, world: World):
         super().__init__()
         self.is_dead = False
+        self.team = team
         self.frame = 0
         self.world = world
         self.has_collision = False
@@ -70,4 +71,7 @@ class Object(ABC, Sprite):
     def render(self, surface: pygame.Surface):
         if not self.visible:
             return
-        surface.blit(self.image, (self.x, self.y))
+        if self.team == 2:
+            surface.blit(pygame.transform.flip(self.image, True, False), (self.x, self.y))
+        else:
+            surface.blit(self.image, (self.x, self.y))

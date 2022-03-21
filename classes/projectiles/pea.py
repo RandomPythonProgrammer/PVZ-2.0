@@ -7,12 +7,13 @@ import time
 class Pea(Projectile):
     def on_create(self):
         self.damage = 25
-        self.start_time = time.time()
+        self.time = 0
 
     def on_death(self):
         self.destroy()
 
     def update(self, dt: float):
+        self.time += dt
         collisions = self.get_collisions()
         if len(collisions) > 0:
             collisions[0].damage(self.damage, self)
@@ -20,5 +21,5 @@ class Pea(Projectile):
             return
         x, y = self.velocity
         self.move(x*dt, y*dt)
-        if time.time() - self.start_time > 10:
+        if self.time > 10:
             self.on_death()

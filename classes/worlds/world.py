@@ -1,11 +1,12 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 import pygame
+from utils.view_utils import ViewPort
 from operator import attrgetter
 from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
-    from classes.zombies.zombie import Zombie
-    from classes.plants.plant import Plant
+    from classes.belligerents.belligerent import Belligerent
+    from classes.farm_items.farmitem import FarmItem
     from classes.objects.object import Object
     from classes.projectiles.projectile import Projectile
     from classes.tiles.tile import Tile
@@ -16,12 +17,13 @@ class World (ABC):
 
     game_id: str
 
-    def __init__(self):
+    def __init__(self, view_port: ViewPort):
+        self.view_port: ViewPort = view_port
         self.game_over = False
         self.paused = False
         self.tiles: List[Tile] = []
-        self.plants: List[Plant] = []
-        self.zombies: List[Zombie] = []
+        self.farm_items: List[FarmItem] = []
+        self.belligerents: List[Belligerent] = []
         self.objects: List[Object] = []
         self.projectiles: List[Projectile] = []
         self.tile_size = 64
@@ -46,8 +48,8 @@ class World (ABC):
         """Method for updating everything in the level"""
         [tile.update(dt) for tile in self.tiles]
         [object.update(dt) for object in self.objects]
-        [plant.update(dt) for plant in self.plants]
-        [zombie.update(dt) for zombie in self.zombies]
+        [plant.update(dt) for plant in self.farm_items]
+        [zombie.update(dt) for zombie in self.belligerents]
         [projectile.update(dt) for projectile in self.projectiles]
 
     @abstractmethod
@@ -64,17 +66,24 @@ class World (ABC):
 
     def render_all(self, surface: pygame.Surface):
         """Method for rendering everything in the world"""
-        [tile.render(surface) for tile in sorted(self.tiles, key=attrgetter('y'))]
-        [object.render(surface) for object in sorted(self.objects, key=attrgetter('y')) if object.background]
-        [plant.render(surface) for plant in sorted(self.plants, key=attrgetter('y'))]
-        [projectile.render(surface) for projectile in sorted(self.projectiles, key=attrgetter('y'))]
-        [zombie.render(surface) for zombie in sorted(self.zombies, key=attrgetter('y'))]
-        [object.render(surface) for object in sorted(self.objects, key=attrgetter('y')) if not object.background]
+        temp_surface = pygame.Surface((self.view_port.width, self.view_port.height))
+        [tile.render(temp_surface) for tile in sorted(self.tiles, key=attrgetter('y'))]
+        [object.render(temp_surface) for object in sorted(self.objects, key=attrgetter('y')) if object.background]
+        [plant.render(temp_surface) for plant in sorted(self.farm_items, key=attrgetter('y'))]
+        [projectile.render(temp_surface) for projectile in sorted(self.projectiles, key=attrgetter('y'))]
+        [zombie.render(temp_surface) for zombie in sorted(self.belligerents, key=attrgetter('y'))]
+        [object.render(temp_surface) for object in sorted(self.objects, key=attrgetter('y')) if not object.background]
+        surface.blit(temp_surface, self.view_port.project(0, 0))
 
     @abstractmethod
-    def spawn_zombie(self, zombie: Zombie, is_wave: bool):
+    def spawn_belligerent(self, belligerent: Belligerent, is_wave: bool):
         """Method called when the game spawns a zombie"""
 
-    @abstractmethod
     def render(self, surface: pygame.Surface):
+        """Renders the world"""
+        self.on_render(surface)
+        self.render_all(surface)
+
+    @abstractmethod
+    def on_render(self, surface: pygame.Surface):
         """Called every loop, write the rendering of the world here"""
