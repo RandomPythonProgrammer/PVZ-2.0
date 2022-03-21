@@ -5,7 +5,7 @@ from classes.farm_items.farm_item import FarmItem
 
 
 @load_class
-class Peashooter(FarmItem):
+class ATDmk1(FarmItem):
 
     @classmethod
     def can_place(cls, tile: Tile, world: World) -> bool:
@@ -26,7 +26,7 @@ class Peashooter(FarmItem):
                        and belligerent.x > self.x
                        and abs(self.rect.bottom - belligerent.rect.bottom) < self.world.tile_size]
             if len(targets) > 0:
-                projectile = classes['projectile']['pea'](
+                projectile = classes['projectile']['bullet'](
                     self.x,
                     self.y,
                     self.world,

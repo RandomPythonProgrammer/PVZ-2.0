@@ -5,14 +5,14 @@ from classes.farm_items.farm_item import FarmItem
 
 
 @load_class
-class Walnut(FarmItem):
+class BarbedWire(FarmItem):
 
     @classmethod
     def can_place(cls, tile: Tile, world: World) -> bool:
         return tile.type == 'normal'
 
     def on_create(self):
-        self.health = 1250
+        self.health = 1500
 
     def on_death(self):
         self.destroy()

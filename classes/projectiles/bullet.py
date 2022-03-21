@@ -1,10 +1,9 @@
 from utils.class_loader import load_class
 from classes.projectiles.projectile import Projectile
-import time
 
 
 @load_class
-class Pea(Projectile):
+class Bullet(Projectile):
     def on_create(self):
         self.damage = 25
         self.time = 0
