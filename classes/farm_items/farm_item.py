@@ -25,9 +25,13 @@ class FarmItem(ABC, Sprite):
         self.health = -1
         self._tile = None
         self.world = world
+        self.team = team
 
         self.debug_image = pygame.Surface(self.bounding_box)
-        self.debug_image.fill((255, 255, 255))
+        if self.team == 1:
+            self.debug_image.fill((0, 0, 255))
+        elif self.team == 2:
+            self.debug_image.fill((255, 0, 0))
         font = pygame.font.SysFont(None, 16)
         self.debug_image.blit(font.render(self.__class__.__name__, True, (0, 0, 0)), (0, 0))
 
@@ -35,7 +39,6 @@ class FarmItem(ABC, Sprite):
         self.rect = pygame.Rect(0, 0, w, h)
         self.rect.update(x, y, self.rect.width, self.rect.height)
         self.x, self.y = x, y
-        self.team = team
         self.has_collision = True
 
         self.on_create()

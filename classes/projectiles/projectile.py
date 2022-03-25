@@ -26,7 +26,10 @@ class Projectile (ABC, Sprite):
         self.has_collision = True
 
         self.debug_image = pygame.Surface(self.bounding_box)
-        self.debug_image.fill((255, 255, 255))
+        if self.team == 1:
+            self.debug_image.fill((0, 0, 255))
+        elif self.team == 2:
+            self.debug_image.fill((255, 0, 0))
         font = pygame.font.SysFont(None, 16)
         self.debug_image.blit(font.render(self.__class__.__name__, True, (0, 0, 0)), (0, 0))
 

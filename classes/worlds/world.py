@@ -55,10 +55,10 @@ class World (ABC):
     def render_all(self, surface: pygame.Surface):
         """Method for rendering everything in the world"""
         temp_surface = pygame.Surface((self.view_port.width, self.view_port.height))
-        [item.render(temp_surface) for item in sorted(self.items, key=attrgetter('y')) if hasattr(item, 'background') and item.background]
-        [item.render(temp_surface) for item in sorted(self.tiles, key=attrgetter('y'))]
-        [item.render(temp_surface) for item in sorted(self.items, key=attrgetter('y')) if not hasattr(item, 'background')]
-        [item.render(temp_surface) for item in sorted(self.items, key=attrgetter('y')) if hasattr(item, 'background') and not item.background]
+        [item.render(temp_surface) for item in sorted(self.items, key=attrgetter('rect.bottom')) if hasattr(item, 'background') and item.background]
+        [item.render(temp_surface) for item in sorted(self.tiles, key=attrgetter('rect.bottom'))]
+        [item.render(temp_surface) for item in sorted(self.items, key=attrgetter('rect.bottom')) if not hasattr(item, 'background')]
+        [item.render(temp_surface) for item in sorted(self.items, key=attrgetter('rect.bottom')) if hasattr(item, 'background') and not item.background]
         surface.blit(temp_surface, self.view_port.project(0, 0))
 
     @abstractmethod

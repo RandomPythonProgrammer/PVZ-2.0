@@ -11,6 +11,7 @@ class Produce(Object):
 
     def on_create(self):
         self.background = False
+        self.timer = 0
 
     def on_death(self):
         self.destroy()
@@ -21,7 +22,9 @@ class Produce(Object):
             global_variables['money'] += 50
 
     def update(self, dt: float):
-        pass
+        if self.timer > 10:
+            self.on_death()
+        self.timer += dt
 
     def on_damage(self, damage: float, source: type):
         pass

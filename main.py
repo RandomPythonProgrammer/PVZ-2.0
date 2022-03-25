@@ -1,13 +1,24 @@
 from utils.class_loader import classes, load_classes
 from utils.asset_loader import load_sprites
 from utils.view_utils import ViewPort
-from classes.tiles.tile import Tile
+from classes.objects.object import Object
 from utils.globals import global_variables
 import traceback
 import threading
 import pygame
 import os
 import time
+
+
+def click(item: object):
+    x_, y_ = pygame.mouse.get_pos()
+    x, y = world.view_port.unproject(x_, y_)
+    if item.rect.collidepoint(x, y):
+        if pygame.mouse.get_pressed()[0]:
+            item.on_click(0)
+        elif pygame.mouse.get_pressed()[2]:
+            item.on_click(1)
+        raise KeyInterrupt
 
 
 class KeyInterrupt(Exception):
@@ -70,16 +81,23 @@ if __name__ == '__main__':
             try:
                 if event.type == pygame.MOUSEBUTTONDOWN:
 
-                    for item in world.items:
-                        if hasattr(item, 'on_click'):
-                            x_, y_ = pygame.mouse.get_pos()
-                            x, y = world.view_port.unproject(x_, y_)
-                            if item.rect.collidepoint(x, y):
-                                if pygame.mouse.get_pressed()[0]:
-                                    item.on_click(0)
-                                elif pygame.mouse.get_pressed()[2]:
-                                    item.on_click(1)
+                    if pygame.mouse.get_pressed()[2] and pygame.key.get_pressed()[pygame.K_LSHIFT]:
+                        x_, y_ = pygame.mouse.get_pos()
+                        x, y = world.view_port.unproject(x_, y_)
+                        for item in world.items:
+                            if hasattr(item, 'team') and item.team == team and item.rect.collidepoint(x, y):
+                                item.on_death()
                                 raise KeyInterrupt
+
+                    for item in world.get_items(Object):
+                        if hasattr(item, 'on_click') and not item.background:
+                            click(item)
+                    for item in world.items:
+                        if hasattr(item, 'on_click') and not hasattr(item, 'background'):
+                            click(item)
+                    for item in world.get_items(Object):
+                        if hasattr(item, 'on_click') and item.background:
+                            click(item)
 
                     if pygame.mouse.get_pressed()[0] and current_item is not None and \
                             (not hasattr(current_item, 'cost') or current_item.cost < global_variables['money']):
@@ -95,13 +113,6 @@ if __name__ == '__main__':
                                         global_variables['money'] -= current_item.cost
                                     raise KeyInterrupt
 
-                    if pygame.mouse.get_pressed()[2] and pygame.key.get_pressed()[pygame.K_LSHIFT]:
-                        x_, y_ = pygame.mouse.get_pos()
-                        x, y = world.view_port.unproject(x_, y_)
-                        for item in world.items:
-                            if hasattr(item, 'team') and item.team == team and item.rect.collidepoint(x, y):
-                                world.items.remove(item)
-                                raise KeyInterrupt
             except KeyInterrupt:
                 pass
             if event.type == pygame.KEYUP:
