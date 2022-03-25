@@ -15,7 +15,7 @@ class Day(World):
             x = 0
             for j in range(self.columns):
                 tile = classes['tile']['grass'](x, y, self)
-                self.items.append(tile)
+                self.tiles.append(tile)
                 x += w
             y += h
 

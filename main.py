@@ -28,8 +28,7 @@ def console():
             if words[0] == 'kill':
                 while len([item for item in world.items if hasattr(item, 'on_death')]) > 0:
                     for item in world.items:
-                        if hasattr(item, 'on_death'):
-                            item.on_death()
+                        item.on_death()
             if words[0] == 'money':
                 global_variables['money'] = int(words[1])
             if words[0] == 'team':
@@ -86,7 +85,7 @@ if __name__ == '__main__':
                             (not hasattr(current_item, 'cost') or current_item.cost < global_variables['money']):
                         x_, y_ = pygame.mouse.get_pos()
                         x, y = world.view_port.unproject(x_, y_)
-                        for tile in world.get_items(Tile):
+                        for tile in world.tiles:
                             if tile.rect.collidepoint(x, y):
                                 if not hasattr(current_item, 'can_place') or current_item.can_place(tile, world):
                                     item = current_item(x, y, team, world)

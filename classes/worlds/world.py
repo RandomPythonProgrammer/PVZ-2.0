@@ -7,6 +7,7 @@ from utils.class_loader import classes
 from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from classes.belligerents.belligerent import Belligerent
+    from classes.tiles.tile import Tile
 
 
 class World (ABC):
@@ -18,6 +19,7 @@ class World (ABC):
         self.view_port: ViewPort = view_port
         self.game_over = False
         self.paused = False
+        self.tiles: List[Tile] = []
         self.items: List[object] = []
         self.columns = 0
         self.rows = 0
@@ -40,6 +42,7 @@ class World (ABC):
     def update_all(self, dt: float):
         """Method for updating everything in the level"""
         [item.update(dt) for item in self.items]
+        [tile.update(dt) for tile in self.tiles]
 
     @abstractmethod
     def on_wave(self):
@@ -53,10 +56,8 @@ class World (ABC):
         """Method for rendering everything in the world"""
         temp_surface = pygame.Surface((self.view_port.width, self.view_port.height))
         [item.render(temp_surface) for item in sorted(self.items, key=attrgetter('y')) if hasattr(item, 'background') and item.background]
-        [item.render(temp_surface) for item in sorted(self.get_items_str('tile'), key=attrgetter('y'))]
-        [item.render(temp_surface) for item in sorted(self.get_items_str('farmitem'), key=attrgetter('y'))]
-        [item.render(temp_surface) for item in sorted(self.get_items_str('belligerent'), key=attrgetter('y'))]
-        [item.render(temp_surface) for item in sorted(self.get_items_str('projectile'), key=attrgetter('y'))]
+        [item.render(temp_surface) for item in sorted(self.tiles, key=attrgetter('y'))]
+        [item.render(temp_surface) for item in sorted(self.items, key=attrgetter('y')) if not hasattr(item, 'background')]
         [item.render(temp_surface) for item in sorted(self.items, key=attrgetter('y')) if hasattr(item, 'background') and not item.background]
         surface.blit(temp_surface, self.view_port.project(0, 0))
 
@@ -78,12 +79,6 @@ class World (ABC):
         if type(item_types) != list:
             item_types = [item_types]
         return [item for item in self.items if len([True for item_type in item_types if isinstance(item, item_type)]) > 0]
-
-    def get_items_str(self, item_types: List[str]):
-        """Return all items of a certain type"""
-        if type(item_types) != list:
-            item_types = [item_types]
-        return [item for item in self.items if len([True for item_type in item_types if self.is_base(item, item_type)]) > 0]
 
     def is_base(self, item: object, type_str: str):
         base = item.__class__.__base__
