@@ -4,14 +4,18 @@ from utils.asset_loader import sprites
 from classes.worlds.world import World
 import pygame
 from pygame.sprite import Sprite
+from typing import Tuple
 
 
 class FarmItem(ABC, Sprite):
     """A farm item"""
 
     game_id: str
+    bounding_box: Tuple[int, int]
+    cost: int
+    growth_time: float
 
-    def __init__(self, x: int, y: int, tile: Tile, team: int, world: World):
+    def __init__(self, x: int, y: int, team: int, world: World):
         super().__init__()
         self.is_dead = False
         self.frame = 0
@@ -19,14 +23,34 @@ class FarmItem(ABC, Sprite):
         self.cooldown = 0
         self.visible = True
         self.health = -1
-        self.tile = tile
+        self._tile = None
         self.world = world
-        self.rect = self.image.get_rect()
+
+        self.debug_image = pygame.Surface(self.bounding_box)
+        self.debug_image.fill((255, 255, 255))
+        font = pygame.font.SysFont(None, 16)
+        self.debug_image.blit(font.render(self.__class__.__name__, True, (0, 0, 0)), (0, 0))
+
+        w, h = self.bounding_box
+        self.rect = pygame.Rect(0, 0, w, h)
         self.rect.update(x, y, self.rect.width, self.rect.height)
         self.x, self.y = x, y
         self.team = team
         self.has_collision = True
+
         self.on_create()
+
+    @property
+    def tile(self):
+        return self._tile
+
+    @tile.setter
+    def tile(self, tile_object: Tile):
+        self._tile = tile_object
+        self.rect.center = tile_object.rect.center
+        self.x = self.rect.x
+        self.y = self.rect.y
+        self._tile.occupied = True
 
     @abstractmethod
     def on_create(self):
@@ -38,13 +62,14 @@ class FarmItem(ABC, Sprite):
 
     def destroy(self):
         """Removes the farm item from the world"""
-        self.world.farm_items.remove(self)
+        self.world.items.remove(self)
+        self.tile.occupied = False
         self.kill()
 
     @classmethod
     @abstractmethod
     def can_place(cls, tile: Tile, world: World) -> bool:
-        """Returns weather the farm item can be farm item or not"""
+        """Returns weather the farm item can be placed or not"""
 
     @abstractmethod
     def update(self, dt: float):
@@ -61,14 +86,17 @@ class FarmItem(ABC, Sprite):
             self.is_dead = True
             self.on_death()
 
-    def collides(self, sprite: pygame.sprite.Sprite) -> bool:
+    def collides(self, sprite: pygame.sprite.Sprite, lane: bool = False) -> bool:
         """Returns whether the farm item collides with a sprite"""
-        return abs(self.rect.bottom - sprite.rect.bottom) < self.world.tile_size \
-               and pygame.sprite.collide_mask(self, sprite)
+        return (abs(self.rect.bottom - sprite.rect.bottom) < self.world.row_spacing or not lane) \
+            and pygame.sprite.collide_mask(self, sprite)
 
     @property
     def image(self) -> pygame.Surface:
-        return sprites[self.game_id][self.frame]
+        try:
+            return sprites[self.game_id][self.frame]
+        except (KeyError, IndexError):
+            return self.debug_image
 
     def render(self, surface: pygame.Surface):
         if not self.visible:

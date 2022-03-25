@@ -4,6 +4,9 @@ from classes.projectiles.projectile import Projectile
 
 @load_class
 class Bullet(Projectile):
+
+    bounding_box = (16, 16)
+
     def on_create(self):
         self.damage = 25
         self.time = 0

@@ -3,6 +3,7 @@ from utils.asset_loader import sprites
 from classes.worlds.world import World
 import pygame
 from pygame.sprite import Sprite
+from typing import Tuple
 
 
 class Projectile (ABC, Sprite):
@@ -10,6 +11,7 @@ class Projectile (ABC, Sprite):
     except for its source_type"""
 
     game_id: str
+    bounding_box: Tuple[int, int]
 
     def __init__(self, x: int, y: int, world: World, velocity: tuple, team: int, source_y=None):
         super().__init__()
@@ -21,9 +23,18 @@ class Projectile (ABC, Sprite):
         self.visible = True
         self.world = world
         self.team = team
-        self.rect = self.image.get_rect()
+        self.has_collision = True
+
+        self.debug_image = pygame.Surface(self.bounding_box)
+        self.debug_image.fill((255, 255, 255))
+        font = pygame.font.SysFont(None, 16)
+        self.debug_image.blit(font.render(self.__class__.__name__, True, (0, 0, 0)), (0, 0))
+
+        w, h = self.bounding_box
+        self.rect = pygame.Rect(0, 0, w, h)
         self.rect.update(x, y, self.rect.width, self.rect.height)
         self.x, self.y = x, y
+
         self.on_create()
 
     @abstractmethod
@@ -38,7 +49,7 @@ class Projectile (ABC, Sprite):
 
     def destroy(self):
         """Removes the projectile from the world"""
-        self.world.projectiles.remove(self)
+        self.world.items.remove(self)
         self.kill()
 
     @abstractmethod
@@ -48,13 +59,11 @@ class Projectile (ABC, Sprite):
 
     def get_collisions(self) -> list:
         """Returns a list of colliding objects based on rules"""
-        total = []
-        [total.extend(group) for group in (self.world.objects, self.world.belligerents, self.world.farm_items)]
         objects = []
 
-        objects.extend([object for object in total
-                        if not object.is_dead
-                        and (object.has_collision and (self.source_y is None or abs(self.source_y - object.rect.bottom) < self.world.tile_size))
+        objects.extend([object for object in self.world.items
+                        if (not hasattr(object, 'is_dead') or not object.is_dead)
+                        and (object.has_collision and (self.source_y is None or abs(self.source_y - object.rect.bottom) < self.world.row_spacing))
                         and object.team != self.team
                         and object.rect.colliderect(self.rect)
                         and pygame.sprite.collide_mask(self, object)])
@@ -62,7 +71,10 @@ class Projectile (ABC, Sprite):
 
     @property
     def image(self) -> pygame.Surface:
-        return sprites[self.game_id][self.frame]
+        try:
+            return sprites[self.game_id][self.frame]
+        except (KeyError, IndexError):
+            return self.debug_image
 
     def move(self, x, y):
         """Moves the projectile"""

@@ -7,6 +7,9 @@ from classes.farm_items.farm_item import FarmItem
 @load_class
 class BarbedWire(FarmItem):
 
+    bounding_box = (64, 64)
+    cost = 200
+
     @classmethod
     def can_place(cls, tile: Tile, world: World) -> bool:
         return tile.type == 'normal'

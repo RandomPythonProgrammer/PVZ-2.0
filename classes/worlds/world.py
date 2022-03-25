@@ -3,13 +3,10 @@ from abc import ABC, abstractmethod
 import pygame
 from utils.view_utils import ViewPort
 from operator import attrgetter
+from utils.class_loader import classes
 from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from classes.belligerents.belligerent import Belligerent
-    from classes.farm_items.farmitem import FarmItem
-    from classes.objects.object import Object
-    from classes.projectiles.projectile import Projectile
-    from classes.tiles.tile import Tile
 
 
 class World (ABC):
@@ -21,15 +18,11 @@ class World (ABC):
         self.view_port: ViewPort = view_port
         self.game_over = False
         self.paused = False
-        self.tiles: List[Tile] = []
-        self.farm_items: List[FarmItem] = []
-        self.belligerents: List[Belligerent] = []
-        self.objects: List[Object] = []
-        self.projectiles: List[Projectile] = []
-        self.tile_size = 64
+        self.items: List[object] = []
         self.columns = 0
         self.rows = 0
         self.on_create()
+        self.row_spacing = 64
 
     @abstractmethod
     def on_create(self):
@@ -46,19 +39,11 @@ class World (ABC):
 
     def update_all(self, dt: float):
         """Method for updating everything in the level"""
-        [tile.update(dt) for tile in self.tiles]
-        [object.update(dt) for object in self.objects]
-        [plant.update(dt) for plant in self.farm_items]
-        [zombie.update(dt) for zombie in self.belligerents]
-        [projectile.update(dt) for projectile in self.projectiles]
+        [item.update(dt) for item in self.items]
 
     @abstractmethod
     def on_wave(self):
         """Called when a wave starts"""
-
-    @abstractmethod
-    def spawn_sun(self):
-        """Called when the world wants to spawn a sun, note you actually have to spawn the sun"""
 
     @abstractmethod
     def update(self, dt: float):
@@ -67,12 +52,12 @@ class World (ABC):
     def render_all(self, surface: pygame.Surface):
         """Method for rendering everything in the world"""
         temp_surface = pygame.Surface((self.view_port.width, self.view_port.height))
-        [tile.render(temp_surface) for tile in sorted(self.tiles, key=attrgetter('y'))]
-        [object.render(temp_surface) for object in sorted(self.objects, key=attrgetter('y')) if object.background]
-        [plant.render(temp_surface) for plant in sorted(self.farm_items, key=attrgetter('y'))]
-        [projectile.render(temp_surface) for projectile in sorted(self.projectiles, key=attrgetter('y'))]
-        [zombie.render(temp_surface) for zombie in sorted(self.belligerents, key=attrgetter('y'))]
-        [object.render(temp_surface) for object in sorted(self.objects, key=attrgetter('y')) if not object.background]
+        [item.render(temp_surface) for item in sorted(self.items, key=attrgetter('y')) if hasattr(item, 'background') and item.background]
+        [item.render(temp_surface) for item in sorted(self.get_items_str('tile'), key=attrgetter('y'))]
+        [item.render(temp_surface) for item in sorted(self.get_items_str('farmitem'), key=attrgetter('y'))]
+        [item.render(temp_surface) for item in sorted(self.get_items_str('belligerent'), key=attrgetter('y'))]
+        [item.render(temp_surface) for item in sorted(self.get_items_str('projectile'), key=attrgetter('y'))]
+        [item.render(temp_surface) for item in sorted(self.items, key=attrgetter('y')) if hasattr(item, 'background') and not item.background]
         surface.blit(temp_surface, self.view_port.project(0, 0))
 
     @abstractmethod
@@ -87,3 +72,22 @@ class World (ABC):
     @abstractmethod
     def on_render(self, surface: pygame.Surface):
         """Called every loop, write the rendering of the world here"""
+
+    def get_items(self, item_types: List[type]):
+        """Return all items of a certain type"""
+        if type(item_types) != list:
+            item_types = [item_types]
+        return [item for item in self.items if len([True for item_type in item_types if isinstance(item, item_type)]) > 0]
+
+    def get_items_str(self, item_types: List[str]):
+        """Return all items of a certain type"""
+        if type(item_types) != list:
+            item_types = [item_types]
+        return [item for item in self.items if len([True for item_type in item_types if self.is_base(item, item_type)]) > 0]
+
+    def is_base(self, item: object, type_str: str):
+        base = item.__class__.__base__
+        while base != object:
+            if base.__name__.lower() == type_str:
+                return True
+            base = base.__base__

@@ -3,6 +3,7 @@ from utils.asset_loader import sprites
 from classes.worlds.world import World
 import pygame
 from pygame.sprite import Sprite
+from typing import Tuple
 
 
 class Object(ABC, Sprite):
@@ -10,6 +11,7 @@ class Object(ABC, Sprite):
     except for its source_type"""
 
     game_id: str
+    bounding_box: Tuple[int, int]
 
     def __init__(self, x: int, y: int, team: int, world: World):
         super().__init__()
@@ -20,9 +22,17 @@ class Object(ABC, Sprite):
         self.has_collision = False
         self.background = True
         self.visible = True
-        self.rect = self.image.get_rect()
+
+        self.debug_image = pygame.Surface(self.bounding_box)
+        self.debug_image.fill((255, 255, 255))
+        font = pygame.font.SysFont(None, 16)
+        self.debug_image.blit(font.render(self.__class__.__name__, True, (0, 0, 0)), (0, 0))
+
+        w, h = self.bounding_box
+        self.rect = pygame.Rect(0, 0, w, h)
         self.rect.update(x, y, self.rect.width, self.rect.height)
         self.x, self.y = x, y
+
         self.on_create()
 
     @abstractmethod
@@ -35,7 +45,7 @@ class Object(ABC, Sprite):
 
     def destroy(self):
         """Removes the projectile from the world"""
-        self.world.objects.remove(self)
+        self.world.items.remove(self)
         self.kill()
 
     @abstractmethod
@@ -48,7 +58,10 @@ class Object(ABC, Sprite):
 
     @property
     def image(self) -> pygame.Surface:
-        return sprites[self.game_id][self.frame]
+        try:
+            return sprites[self.game_id][self.frame]
+        except (KeyError, IndexError):
+            return self.debug_image
 
     @abstractmethod
     def on_damage(self, damage: float, source: type):
