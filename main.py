@@ -1,18 +1,21 @@
 from utils.class_loader import classes, load_classes
 from utils.asset_loader import load_sprites
-from utils.input_utils import get_cancelled, set_cancelled, events, get_events
 from utils.view_utils import ViewPort
 from classes.tiles.tile import Tile
 from utils.globals import global_variables
 import traceback
 import threading
 import pygame
-import sys
+import os
 import time
 
 
+class KeyInterrupt(Exception):
+    """Raised when an action is done to block other actions"""
+
+
 def console():
-    global current_item
+    global current_item, team
     while True:
         try:
             command = input('$: ')
@@ -22,9 +25,19 @@ def console():
                     current_item = classes[words[1]][words[2]]
                 else:
                     current_item = None
+            if words[0] == 'kill':
+                while len([item for item in world.items if hasattr(item, 'on_death')]) > 0:
+                    for item in world.items:
+                        if hasattr(item, 'on_death'):
+                            item.on_death()
+            if words[0] == 'money':
+                global_variables['money'] = int(words[1])
+            if words[0] == 'team':
+                team = int(words[1])
+            if words[0] == 'stop':
+                os._exit(0)
         except Exception:
             traceback.print_exc()
-            print('$: ')
 
 
 if __name__ == '__main__':
@@ -48,32 +61,50 @@ if __name__ == '__main__':
     current_item = classes['farmitem']['atdmk1']
 
     while not world.game_over:
-        set_cancelled(False)
-        get_events()
+
         if not world.paused:
             world.update(time.time() - last_time)
-        for event in events:
+        for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if pygame.mouse.get_pressed()[0] and not get_cancelled() and current_item is not None and current_item.cost < global_variables['money']:
-                    x_, y_ = pygame.mouse.get_pos()
-                    x, y = world.view_port.unproject(x_, y_)
-                    for tile in world.get_items(Tile):
-                        if tile.rect.collidepoint(x, y):
-                            if not hasattr(current_item, 'can_place') or current_item.can_place(tile, world):
-                                item = current_item(x, y, team, world)
-                                item.tile = tile
-                                world.items.append(item)
-                                set_cancelled(True)
-                                global_variables['money'] -= current_item.cost
-                                break
-                if pygame.mouse.get_pressed()[2]:
-                    x_, y_ = pygame.mouse.get_pos()
-                    x, y = world.view_port.unproject(x_, y_)
+                # kills all of the threads
+                os._exit(0)
+            try:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+
                     for item in world.items:
-                        if hasattr(item, 'team') and item.team == team and item.rect.collidepoint(x, y):
-                            world.items.remove(item)
+                        if hasattr(item, 'on_click'):
+                            x_, y_ = pygame.mouse.get_pos()
+                            x, y = world.view_port.unproject(x_, y_)
+                            if item.rect.collidepoint(x, y):
+                                if pygame.mouse.get_pressed()[0]:
+                                    item.on_click(0)
+                                elif pygame.mouse.get_pressed()[2]:
+                                    item.on_click(1)
+                                raise KeyInterrupt
+
+                    if pygame.mouse.get_pressed()[0] and current_item is not None and \
+                            (not hasattr(current_item, 'cost') or current_item.cost < global_variables['money']):
+                        x_, y_ = pygame.mouse.get_pos()
+                        x, y = world.view_port.unproject(x_, y_)
+                        for tile in world.get_items(Tile):
+                            if tile.rect.collidepoint(x, y):
+                                if not hasattr(current_item, 'can_place') or current_item.can_place(tile, world):
+                                    item = current_item(x, y, team, world)
+                                    item.tile = tile
+                                    world.items.append(item)
+                                    if hasattr(current_item, 'cost'):
+                                        global_variables['money'] -= current_item.cost
+                                    raise KeyInterrupt
+
+                    if pygame.mouse.get_pressed()[2] and pygame.key.get_pressed()[pygame.K_LSHIFT]:
+                        x_, y_ = pygame.mouse.get_pos()
+                        x, y = world.view_port.unproject(x_, y_)
+                        for item in world.items:
+                            if hasattr(item, 'team') and item.team == team and item.rect.collidepoint(x, y):
+                                world.items.remove(item)
+                                raise KeyInterrupt
+            except KeyInterrupt:
+                pass
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE:
                     world.paused = not world.paused

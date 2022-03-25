@@ -22,6 +22,9 @@ class Hen(FarmItem):
     def on_death(self):
         self.destroy()
 
+    def on_click(self, mouse_button: int):
+        pass
+
     def update(self, dt: float):
         if self.timer > 12.75:
             x, y, w, h = self.tile.rect

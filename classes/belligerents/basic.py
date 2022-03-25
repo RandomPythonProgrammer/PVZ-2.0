@@ -25,6 +25,7 @@ class Basic(Belligerent):
         is_eating = False
         targets = [target for target in self.world.get_items(FarmItem)
                    if target.collides(self)
+                   and abs(target.rect.bottom - self.rect.bottom) < self.world.row_spacing
                    and self.rect.centerx > target.rect.centerx
                    and target.team != self.team]
         if len(targets) > 0:

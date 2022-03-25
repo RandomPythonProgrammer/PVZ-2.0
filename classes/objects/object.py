@@ -30,8 +30,8 @@ class Object(ABC, Sprite):
 
         w, h = self.bounding_box
         self.rect = pygame.Rect(0, 0, w, h)
-        self.rect.update(x, y, self.rect.width, self.rect.height)
-        self.x, self.y = x, y
+        self.rect.center = (x, y)
+        self.x, self.y = self.rect.topleft
 
         self.on_create()
 
@@ -47,6 +47,10 @@ class Object(ABC, Sprite):
         """Removes the projectile from the world"""
         self.world.items.remove(self)
         self.kill()
+
+    @abstractmethod
+    def on_click(self, mouse_button: int):
+        """Called when the object is clicked"""
 
     @abstractmethod
     def update(self, dt: float):

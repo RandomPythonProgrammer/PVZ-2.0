@@ -14,6 +14,9 @@ class BarbedWire(FarmItem):
     def can_place(cls, tile: Tile, world: World) -> bool:
         return tile.type == 'normal'
 
+    def on_click(self, mouse_button: int):
+        pass
+
     def on_create(self):
         self.health = 1500
 

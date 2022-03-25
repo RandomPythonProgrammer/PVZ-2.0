@@ -47,7 +47,7 @@ class Belligerent (ABC, Sprite):
     @tile.setter
     def tile(self, tile_object: Tile):
         self._tile = tile_object
-        self.rect.center = tile_object.rect.center
+        self.rect.bottomleft = tile_object.rect.bottomleft
         self.x = self.rect.x
         self.y = self.rect.y
 

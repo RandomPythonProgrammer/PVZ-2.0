@@ -22,6 +22,9 @@ class ATDmk1(FarmItem):
     def on_death(self):
         self.destroy()
 
+    def on_click(self, mouse_button: int):
+        pass
+
     def update(self, dt: float):
         if self.timer > 1.75:
             targets = [belligerent for belligerent in self.world.get_items(Belligerent)

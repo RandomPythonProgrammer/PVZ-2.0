@@ -65,8 +65,7 @@ class Projectile (ABC, Sprite):
                         if (not hasattr(object, 'is_dead') or not object.is_dead)
                         and (object.has_collision and (self.source_y is None or abs(self.source_y - object.rect.bottom) < self.world.row_spacing))
                         and object.team != self.team
-                        and object.rect.colliderect(self.rect)
-                        and pygame.sprite.collide_mask(self, object)])
+                        and object.rect.colliderect(self.rect)])
         return objects
 
     @property

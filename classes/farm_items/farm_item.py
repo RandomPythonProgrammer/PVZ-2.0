@@ -53,6 +53,10 @@ class FarmItem(ABC, Sprite):
         self._tile.occupied = True
 
     @abstractmethod
+    def on_click(self, mouse_button: int):
+        """Called when the object is clicked"""
+
+    @abstractmethod
     def on_create(self):
         """Called when the farm item is created"""
 
@@ -89,7 +93,7 @@ class FarmItem(ABC, Sprite):
     def collides(self, sprite: pygame.sprite.Sprite, lane: bool = False) -> bool:
         """Returns whether the farm item collides with a sprite"""
         return (abs(self.rect.bottom - sprite.rect.bottom) < self.world.row_spacing or not lane) \
-            and pygame.sprite.collide_mask(self, sprite)
+            and sprite.rect.colliderect(self.rect)
 
     @property
     def image(self) -> pygame.Surface:
