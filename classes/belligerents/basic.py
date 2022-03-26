@@ -24,10 +24,9 @@ class Basic(Belligerent):
     def update(self, dt: float):
         is_eating = False
         targets = [target for target in self.world.get_items(FarmItem)
-                   if target.collides(self)
+                   if target.team != self.team
                    and abs(target.rect.bottom - self.rect.bottom) < self.world.row_spacing
-                   and self.rect.centerx > target.rect.centerx
-                   and target.team != self.team]
+                   and target.collides(self)]
         if len(targets) > 0:
             targets[0].damage(45*dt, self)
             is_eating = True

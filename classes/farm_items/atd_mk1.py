@@ -30,7 +30,7 @@ class ATDmk1(FarmItem):
             targets = [belligerent for belligerent in self.world.get_items(Belligerent)
                        if belligerent.team != self.team
                        and not belligerent.is_dead
-                       and belligerent.x > self.x
+                       and ((self.team == 1 and belligerent.x > self.x) or (self.team == 2 and belligerent.x < self.x))
                        and abs(self.rect.bottom - belligerent.rect.bottom) < self.world.row_spacing]
             if len(targets) > 0:
                 if self.team == 1:
