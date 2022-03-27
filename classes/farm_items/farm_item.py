@@ -27,14 +27,6 @@ class FarmItem(ABC, Sprite):
         self.world = world
         self.team = team
 
-        self.debug_image = pygame.Surface(self.bounding_box)
-        if self.team == 1:
-            self.debug_image.fill((0, 0, 255))
-        elif self.team == 2:
-            self.debug_image.fill((255, 0, 0))
-        font = pygame.font.SysFont(None, 16)
-        self.debug_image.blit(font.render(self.__class__.__name__, True, (0, 0, 0)), (0, 0))
-
         w, h = self.bounding_box
         self.rect = pygame.Rect(0, 0, w, h)
         self.rect.update(x, y, self.rect.width, self.rect.height)
@@ -103,7 +95,14 @@ class FarmItem(ABC, Sprite):
         try:
             return sprites[self.game_id][self.frame]
         except (KeyError, IndexError):
-            return self.debug_image
+            debug_image = pygame.Surface(self.bounding_box)
+            if self.team == 1:
+                debug_image.fill((0, 0, 255))
+            elif self.team == 2:
+                debug_image.fill((255, 0, 0))
+            font = pygame.font.SysFont(None, 16)
+            debug_image.blit(font.render(self.__class__.__name__, True, (0, 0, 0)), (0, 0))
+            return debug_image
 
     def render(self, surface: pygame.Surface):
         if not self.visible:
