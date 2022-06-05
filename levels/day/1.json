@@ -1,0 +1,15 @@
+{
+  "world": "day",
+  "start_time": 30,
+  "spawn_delay": 5,
+  "wave_spawn_delay": 0.5,
+  "belligerents": {
+    "waves": [
+      {"basic": 10},
+      {"basic": 20}
+    ],
+    "roam": {
+      "basic": 10
+    }
+  }
+}

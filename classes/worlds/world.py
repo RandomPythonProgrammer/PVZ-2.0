@@ -3,7 +3,6 @@ from abc import ABC, abstractmethod
 import pygame
 from utils.view_utils import ViewPort
 from operator import attrgetter
-from utils.class_loader import classes
 from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from classes.belligerents.belligerent import Belligerent
@@ -23,6 +22,9 @@ class World (ABC):
         self.items: List[object] = []
         self.columns = 0
         self.rows = 0
+        self.is_wave = False
+        self.belligerent_queue = {}
+        self.current_wave = 0
         self.on_create()
         self.row_spacing = 64
 
