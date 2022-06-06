@@ -36,6 +36,8 @@ class Basic(Belligerent):
             else:
                 velocity = -25
             self.move(velocity * dt, 0)
+            if self.x < 0:
+                self.world.game_over = True
 
     def on_damage(self, damage: float, source: type) -> float:
         return damage

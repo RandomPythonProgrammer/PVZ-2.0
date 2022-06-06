@@ -19,6 +19,11 @@ class Tile(ABC, Sprite):
         self.visible = True
         self.has_collision = False
 
+        self.debug_image = pygame.Surface(self.bounding_box)
+        self.debug_image.fill((255, 255, 255))
+        font = pygame.font.SysFont(None, 16)
+        self.debug_image.blit(font.render(self.__class__.__name__, True, (0, 0, 0)), (0, 0))
+
         w, h = self.bounding_box
         self.rect = pygame.Rect(0, 0, w, h)
         self.rect.update(x, y, self.rect.width, self.rect.height)
@@ -40,11 +45,7 @@ class Tile(ABC, Sprite):
         try:
             return sprites[self.game_id][self.frame]
         except (KeyError, IndexError):
-            debug_image = pygame.Surface(self.bounding_box)
-            debug_image.fill((255, 255, 255))
-            font = pygame.font.SysFont(None, 16)
-            debug_image.blit(font.render(self.__class__.__name__, True, (0, 0, 0)), (0, 0))
-            return debug_image
+            return self.debug_image
 
     def render(self, surface: pygame.Surface):
         if not self.visible:

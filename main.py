@@ -14,6 +14,8 @@ import pygame
 import os
 import time
 
+from copy import deepcopy
+
 
 def click(item: object):
     x_, y_ = pygame.mouse.get_pos()
@@ -63,7 +65,7 @@ if __name__ == '__main__':
     load_sprites()
     load_classes()
     font = pygame.font.SysFont(None, 16)
-    global_variables['money'] = 1000
+    global_variables['money'] = 750
 
     with open('levels/day/1.json', 'r') as file:
         level_data = json.load(file)
@@ -76,9 +78,9 @@ if __name__ == '__main__':
 
     team = 1
 
-    current_item = classes['farmitem']['atdmk1']
+    current_item = classes['farmitem']['atdmk3']
 
-    world.belligerent_queue = level_data['belligerents']['roam']
+    world.belligerent_queue = deepcopy(level_data['belligerents']['roam'])
     last_spawn_time = time.time()
 
     while not world.game_over:
@@ -87,14 +89,17 @@ if __name__ == '__main__':
             world.update(time.time() - last_time)
             if len(world.belligerent_queue.keys()) == 0:
                 if len(world.get_items(Belligerent)) == 0:
-                    if not world.is_wave and world.current_wave < len(level_data['belligerents']['waves']):
+                    if not world.is_wave:
                         world.on_wave()
                         world.belligerent_queue = level_data['belligerents']['waves'][world.current_wave]
                         world.current_wave += 1
                         world.is_wave = True
+                    elif world.current_wave == len(level_data['belligerents']['waves']):
+                        print("win")
+                        world.game_over = True
                     else:
                         world.is_wave = False
-                        world.belligerent_queue = level_data['belligerents']['roam']
+                        world.belligerent_queue = deepcopy(level_data['belligerents']['roam'])
             elif time.time() - last_spawn_time > numpy.random.normal(loc=1, scale=0.2) * (level_data['wave_spawn_delay'] if world.is_wave else level_data['spawn_delay']):
                 belligerent = random.choice(list(world.belligerent_queue.keys()))
                 world.belligerent_queue[belligerent] -= 1
